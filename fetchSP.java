@@ -26,7 +26,7 @@ public class fetchSP {
 	public static Pair Scrape() {
 		try {
 			URL url = new URL("http://83.85.215.128:8080/storesales.php");
-			con = url.openConnection();	        
+			con = url.openConnection();
 			is = con.getInputStream();
 			isr = new InputStreamReader(is);
 			br = new BufferedReader(isr);
