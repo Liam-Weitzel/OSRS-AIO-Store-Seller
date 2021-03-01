@@ -67,7 +67,7 @@ public class main extends AbstractScript{
 		log("BuyAvg: " + Arrays.toString(BuyAvg));
 		log("Prices: " + Arrays.toString(Prices));
 		log("toSell: " + Arrays.toString(toSell));
-		log("toSell.length: "+toSell.length);
+		log("toSell.length: " + toSell.length);
 		}
 	
 	public void onExit() {
@@ -106,15 +106,35 @@ public class main extends AbstractScript{
 	}
 	
 	public void updateWorlds() {
-		for (int i = 301; i <= 535; i++) {
-			if (i != 423 && i != 400 && i != 385) {
-				if (Worlds.getWorld(i).isMembers() && (Worlds.getWorld(i).getMinimumLevel() == 0 || Worlds.getWorld(i).getMinimumLevel() <= Skills.getTotalLevel()) && !Worlds.getWorld(i).isHighRisk() && !Worlds.getWorld(i).isLastManStanding() && !Worlds.getWorld(i).isTournamentWorld() && !Worlds.getWorld(i).isPVP()) {
-					CURworlds = Arrays.copyOf(CURworlds, CURworlds.length+1);
-					CURworlds[CURworlds.length-1] = i;
-				}
-			}
-		}
+		final int[] nullworlds = getNullWorlds();
+
+        for (int i = 301; i <= 535; i++) {
+            if (!inArray(nullworlds, i)) {
+                if (Worlds.getWorld(i).isMembers() && (Worlds.getWorld(i).getMinimumLevel() == 0 || Worlds.getWorld(i).getMinimumLevel() <= Skills.getTotalLevel()) && !Worlds.getWorld(i).isHighRisk() && !Worlds.getWorld(i).isLastManStanding() && !Worlds.getWorld(i).isTournamentWorld() && !Worlds.getWorld(i).isPVP() && !Worlds.getWorld(i).isTargetWorld() && !Worlds.getWorld(i).isDeadmanMode()) {
+                	CURworlds = Arrays.copyOf(CURworlds, CURworlds.length + 1);
+                    CURworlds[CURworlds.length - 1] = i;
+                }
+            }
+        }
 	}
+	
+	public static boolean inArray(final int[] arr, final int key) {
+        return Arrays.stream(arr).anyMatch(i -> i == key);
+    }
+
+    public static int[] getNullWorlds() {
+        int[] nullworlds = new int[0];
+
+        for (int i = 301; i <= 535; i++) {
+            try {
+                Worlds.getWorld(i).isMembers();
+            } catch (final Exception e) {
+                nullworlds = Arrays.copyOf(nullworlds, nullworlds.length + 1);
+                nullworlds[nullworlds.length - 1] = i;
+            }
+        }
+        return nullworlds;
+    }
 	
 	public void removeNulls() {
 		int[] indices = {};
